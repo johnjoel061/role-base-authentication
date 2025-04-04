@@ -1,6 +1,5 @@
 //Internal Lib Import
 const EmployeeModel = require("../../model/Employee/EmployeeModel");
-const RegistrationService = require("../../services/Auth/RegistrationService");
 const LoginService = require("../../services/Auth/LoginService");
 
 /**

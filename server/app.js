@@ -11,7 +11,7 @@ const app = new express();
 const {
   DefaultErrorHandler,
   NotFoundError,
-} = require("./helper/ErrorHandler");
+} = require("./src/helper/ErrorHandler");
 
 //Confiqure dotenv
 dotenv.config({ path: path.join(__dirname, "./.env") });

@@ -1,20 +1,21 @@
 //External Lib Import
 const { model, Schema } = require("mongoose");
 
-const EmployeesSchema = new Schema(
+const otpSchema = new Schema(
   {
-    FirstName: {
+    OtpCode: {
       type: String,
       required: true,
     },
-    LastName: {
-      type: String,
+    OtpStatus: {
+      type: Number,
+      default: 0,
       required: true,
     },
-    Phone: {
-      type: String,
+    OtpCodeExpire: {
+      type: Number,
+      default: Date.now() + 15 * 60 * 1000,
       required: true,
-      unique: true,
     },
     Email: {
       type: String,
@@ -25,22 +26,10 @@ const EmployeesSchema = new Schema(
         },
         message: (prop) => `Invalid Email Address: ${prop.value}`,
       },
-      unique: true,
     },
-    Password: {
-      type: String,
-      required: true,
-    },
-    Role: {
-      type: String,
-      enum: ["EMPLOYEE", "HOD", "ADMIN"],
-      default: "EMPLOYEE",
-      required: true,
-    },
-
   },
   { versionKey: false, timestamps: true },
 );
 
-const EmployeesModel = model("Employee", EmployeesSchema);
-module.exports = EmployeesModel;
+const OtpModel = model("Otp", otpSchema);
+module.exports = OtpModel;
