@@ -8,7 +8,7 @@ import { ChangeBodyAttribute } from "../helpers/ChangeBodyAttribute";
 import LazyLoader from "../components/Common/LazyLoader";
 
 const DefaultLayout = (props) => {
-  const { LayoutColor } = useSelector((state) => state.Setting);
+  const { LayoutColor } = useSelector((state) => state.Setting || {});
 
   useEffect(() => {
     ChangeBodyAttribute("data-layout-color", LayoutColor);

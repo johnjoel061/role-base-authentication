@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 // All layouts/containers
 import DefaultLayout from "../layouts/Default";
 
 //External Lib Import
+
+// Loader
+import LazyLoader from "../components/Common/LazyLoader";
+
 
 // Auth
 const Login = React.lazy(() => import("../pages/Account/Login"));
@@ -22,11 +26,16 @@ const AllRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
-        <Route path="" element={<Navigate to="/account/login" />} />
+        <Route index element={<Navigate to="/account/login" />} />
         <Route path="*" element={<Navigate to="/account/login" />} />
+
         <Route
           path="/account/login"
-          element={<LoadComponent component={Login} />}
+          element={
+            <Suspense fallback={<LazyLoader />}>
+              <Login />
+            </Suspense>
+          }
         />
       </Route>
     </Routes>

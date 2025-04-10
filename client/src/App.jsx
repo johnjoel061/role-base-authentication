@@ -7,7 +7,7 @@ const App = () => {
     <>
       <AppRoutes />
       <Toaster />
-      <FullScreenLoader />
+      {/* <FullScreenLoader /> */}
     </>
   );
 };
