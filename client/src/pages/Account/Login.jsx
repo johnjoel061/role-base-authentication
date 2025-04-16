@@ -1,56 +1,58 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  InputGroup,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button, InputGroup } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Logo from "../../assets/images/logo.png"; // adjust path as needed
-import BackgroundWrapper from "../Account/BackgroundWrapper"; // adjust path if needed
-import { Link } from "react-router-dom";
+import Logo from "../../assets/images/logo.png";
+import BackgroundWrapper from "../Account/BackgroundWrapper";
+import { Link, useNavigate } from "react-router-dom";
+import AuthRequest from "../../APIRequest/AuthRequest";
 
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+// Validation schema
+const validationSchema = Yup.object().shape({
+  Email: Yup.string().email("Invalid email").required("Please enter your email"),
+  Password: Yup.string().required("Please enter your password"),
 });
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const formik = useFormik({
-    initialValues: { email: "", password: "" },
+    initialValues: { Email: "", Password: "" },
     validationSchema,
-    onSubmit: (values) => {
-      console.log("Logging in with:", values);
-      // Handle login logic
+    onSubmit: async (values) => {
+      try {
+        const result = await AuthRequest.LoginUser(values);
+        if (!result) {
+          setError("Invalid credentials or server error.");
+        } else {
+          // Store user data in localStorage
+          localStorage.setItem('user_data', JSON.stringify(result.data));
+
+          // Redirect to the dashboard after login
+          navigate("/dashboard");
+        }
+      } catch (err) {
+        console.error("Error during login:", err);
+        setError("An error occurred during login.");
+      }
     },
   });
 
   return (
     <BackgroundWrapper>
-      <Container
-        fluid
-        className="min-vh-100 d-flex justify-content-center align-items-center px-3"
-      >
+      <Container fluid className="min-vh-100 d-flex justify-content-center align-items-center px-3">
         <Row className="w-100 justify-content-center">
           <Col xs={12} sm={10} md={8} lg={5}>
             <Card className="shadow">
               <Card.Body className="p-4">
-                {/* Centered Logo with Background */}
+                {/* Logo */}
                 <div
                   className="d-flex justify-content-center align-items-center mb-4 mx-auto"
                   style={{
-                    backgroundColor: "#f8f9fa", // light gray (or any color you prefer)
+                    backgroundColor: "#f8f9fa",
                     borderRadius: "10px",
                     padding: "15px",
                     width: "fit-content",
@@ -63,36 +65,38 @@ const Login = () => {
                     style={{ maxWidth: "120px" }}
                   />
                 </div>
+
                 <h4 className="text-center mb-3">Sign In</h4>
-                <p className="text-center text-mted mb-4">
+                <p className="text-center text-muted mb-4">
                   Enter your email and password to access the admin panel.
                 </p>
+
+                {error && <div className="alert alert-danger">{error}</div>}
+
                 <Form onSubmit={formik.handleSubmit}>
-                  {/* Email Field */}
-                  <Form.Group className="mb-3" controlId="email">
+                  {/* Email */}
+                  <Form.Group className="mb-3" controlId="Email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                       type="email"
                       placeholder="Enter your email"
-                      {...formik.getFieldProps("email")}
-                      isInvalid={formik.touched.email && formik.errors.email}
+                      {...formik.getFieldProps("Email")}
+                      isInvalid={formik.touched.Email && formik.errors.Email}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {formik.errors.email}
+                      {formik.errors.Email}
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  {/* Password Field with Icons */}
-                  <Form.Group className="mb-3" controlId="password">
+                  {/* Password */}
+                  <Form.Group className="mb-3" controlId="Password">
                     <Form.Label>Password</Form.Label>
                     <InputGroup>
                       <Form.Control
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
-                        {...formik.getFieldProps("password")}
-                        isInvalid={
-                          formik.touched.password && formik.errors.password
-                        }
+                        {...formik.getFieldProps("Password")}
+                        isInvalid={formik.touched.Password && formik.errors.Password}
                       />
                       <Button
                         variant="outline-secondary"
@@ -103,7 +107,7 @@ const Login = () => {
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </Button>
                       <Form.Control.Feedback type="invalid">
-                        {formik.errors.password}
+                        {formik.errors.Password}
                       </Form.Control.Feedback>
                     </InputGroup>
                     <div className="text-end mt-2">
@@ -125,9 +129,9 @@ const Login = () => {
 
                 <div className="text-center text-muted small">
                   Don't have an account?{" "}
-                  <a href="#" className="text-primary text-decoration-none">
+                  <span className="text-primary text-decoration-none" style={{ cursor: "pointer" }}>
                     Sign Up
-                  </a>
+                  </span>
                 </div>
               </Card.Body>
             </Card>
