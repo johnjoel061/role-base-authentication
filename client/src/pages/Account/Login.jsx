@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Logo from "../../assets/images/logo.png"; // adjust path as needed
 import BackgroundWrapper from "../Account/BackgroundWrapper"; // adjust path if needed
+import { Link } from "react-router-dom";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -106,12 +107,12 @@ const Login = () => {
                       </Form.Control.Feedback>
                     </InputGroup>
                     <div className="text-end mt-2">
-                      <a
-                        href="#"
+                      <Link
+                        to="/account/forget-password"
                         className="text-decoration-none text-primary small"
                       >
                         Forgot your password?
-                      </a>
+                      </Link>
                     </div>
                   </Form.Group>
 

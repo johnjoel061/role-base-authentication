@@ -1,20 +1,22 @@
-// redux/slices/loaderSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const loaderSlice = createSlice({
-  name: "Loader",
+  name: "loader",
   initialState: {
-    IsLoading: false,
+    loading: false,
   },
   reducers: {
-    showLoader: (state) => {
-      state.IsLoading = true;
+    SetLoading: (state) => {
+      state.loading = true;
     },
-    hideLoader: (state) => {
-      state.IsLoading = false;
+    RemoveLoading: (state) => {
+      state.loading = false;
     },
   },
 });
 
-export const { showLoader, hideLoader } = loaderSlice.actions;
+// ✅ Export your actions properly
+export const { SetLoading, RemoveLoading } = loaderSlice.actions;
+
+// ✅ Export the reducer (usually default)
 export default loaderSlice.reducer;
