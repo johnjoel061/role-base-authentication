@@ -30,13 +30,6 @@ class SessionHelper {
     return localStorage.getItem("RecoverVerifyOTP");
   }
 
-  static SetLanguage(Language) {
-    localStorage.setItem("i18nextLng", Language);
-  }
-  static GetLanguage() {
-    return localStorage.getItem("i18nextLng");
-  }
-
   static SetTheme(Theme) {
     localStorage.setItem("Theme", Theme);
   }
