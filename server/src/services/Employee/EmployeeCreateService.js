@@ -7,7 +7,7 @@ const EmployeeCreateService = async (Request, DataModel) => {
 
   const Employee = await DataModel.aggregate([
     {
-      $match: { Email: PostBody.Email },
+      $match: { email: PostBody.email },
     },
   ]);
 
@@ -15,7 +15,7 @@ const EmployeeCreateService = async (Request, DataModel) => {
     throw CreateError("Employee Already Created", 400);
   }
   
-  PostBody.Password = await HashPassword(PostBody.Password);
+  PostBody.password = await HashPassword(PostBody.password);
 
   await DataModel.create(PostBody);
   return { message: "Employee Create Successful" };

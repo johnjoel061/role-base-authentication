@@ -3,21 +3,21 @@ const { model, Schema } = require("mongoose");
 
 const otpSchema = new Schema(
   {
-    OtpCode: {
+    otpCode: {
       type: String,
       required: true,
     },
-    OtpStatus: {
+    otpStatus: {
       type: Number,
       default: 0,
       required: true,
     },
-    OtpCodeExpire: {
+    otpCodeExpire: {
       type: Number,
       default: Date.now() + 15 * 60 * 1000,
       required: true,
     },
-    Email: {
+    email: {
       type: String,
       required: true,
       validate: {

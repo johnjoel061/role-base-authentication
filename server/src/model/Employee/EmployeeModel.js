@@ -3,20 +3,20 @@ const { model, Schema } = require("mongoose");
 
 const EmployeesSchema = new Schema(
   {
-    FirstName: {
+    firstName: {
       type: String,
       required: true,
     },
-    LastName: {
+    lastName: {
       type: String,
       required: true,
     },
-    Phone: {
+    phone: {
       type: String,
       required: true,
       unique: true,
     },
-    Email: {
+    email: {
       type: String,
       required: true,
       validate: {
@@ -27,11 +27,11 @@ const EmployeesSchema = new Schema(
       },
       unique: true,
     },
-    Password: {
+    password: {
       type: String,
       required: true,
     },
-    Role: {
+    role: {
       type: String,
       enum: ["EMPLOYEE", "HOD", "ADMIN"],
       default: "EMPLOYEE",
