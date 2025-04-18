@@ -6,7 +6,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import useRequestPasswordReset from "../../hooks/AuthHook/useRequestPasswordReset";
 import useResetPassword from "../../hooks/AuthHook/usePasswordReset";
 // images
-import Logo from "../../assets/logo.jpg";
+// import Logo from "../../assets/logo.jpg";
 import { useAuth } from "../../contexts/AuthContext";
 
 const ForgotPassword = () => {
@@ -128,7 +128,7 @@ const ForgotPassword = () => {
     <div style={wrapperStyles}>
       <Card style={cardStyles}>
         {/* LOGO HERE */}
-        <Link to="/login" style={logoContainerStyles}>
+        {/* <Link to="/login" style={logoContainerStyles}>
           <span className="logo">
             <img
               src={Logo}
@@ -136,7 +136,7 @@ const ForgotPassword = () => {
               style={{ height: logoHeight, maxWidth: "100%" }}
             />
           </span>
-        </Link>
+        </Link> */}
 
         <div style={formContainerStyles}>
           <Typography.Title level={3} strong style={titleStyles}>

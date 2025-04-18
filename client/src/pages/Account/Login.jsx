@@ -5,7 +5,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 
 import useLogin from "../../hooks/AuthHook/useLogin";
 // images
-import Logo from "../../assets/logo.jpg";
+// import Logo from "../../assets/logo.jpg";
 import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
@@ -64,7 +64,7 @@ const Login = () => {
     alignItems: "center",
     minHeight: "100vh",
     padding: "20px", // Optional: To add some padding around the card
-    background: "#0A5E4F",
+    background: "#f0f2f5",
   };
 
   const cardStyles = {
@@ -94,16 +94,6 @@ const Login = () => {
     textAlign: "center",
   };
 
-  const sloganStyles = {
-    textAlign: "center",
-    paddingBottom: "1.5rem",
-  };
-
-  const buttonStyles = {
-    width: "100%",
-    marginTop: "1rem",
-  };
-
   const alertStyles = {
     marginBottom: "1.5rem",
   };
@@ -117,13 +107,8 @@ const Login = () => {
   return (
     <>
       <div style={wrapperStyles}>
-        <div className="header">
-          <Link to="/home-page" className="login-button">
-            Go to Homepage
-          </Link>
-        </div>
         <Card style={cardStyles}>
-          <Link to="/login" style={logoContainerStyles}>
+          {/* <Link to="/login" style={logoContainerStyles}>
             <span className="logo">
               <img
                 src={Logo}
@@ -131,11 +116,11 @@ const Login = () => {
                 style={{ height: logoHeight, maxWidth: "100%" }}
               />
             </span>
-          </Link>
+          </Link> */}
 
           <div style={formContainerStyles}>
             <Typography.Title level={3} strong style={titleStyles}>
-              ADMIN LOGIN
+              LOG IN
             </Typography.Title>
 
             <Form layout="vertical" onFinish={handleLogin} autoComplete="off">
