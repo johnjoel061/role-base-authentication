@@ -8,9 +8,6 @@ const app = express();
 //===== ROUTERS ====//
 const authRouter = require('./routes/authRoute');
 const userRouter = require('./routes/userRoute');
-const facilityRouter = require('./routes/facilityRoute');
-const schedulingRequestRouter = require('./routes/schedulingRequestRoute');
-
 
 //===== ENVIRONMENT VARIABLES ====//
 dotenv.config({ path: path.join(__dirname, "./.env") });
@@ -30,18 +27,13 @@ const DB_OPTIONS = {
   autoIndex: true,
 };
 
-// Debugging: Log DB_OPTIONS to ensure they are correctly set
-//console.log("DB_OPTIONS:", DB_OPTIONS);
 
 // Connect to the database
 connectDB(MONGODB_CONNECTION_URL, DB_OPTIONS);
 
 //===== ROUTING IMPLEMENTATION ====//
 app.use("/api/auth", authRouter);
-app.use("/api/admin", userRouter);
-app.use("/api/location", facilityRouter);
-app.use("/api/book", schedulingRequestRouter);
-
+app.use("/api/user", userRouter);
 
 //===== GLOBAL ERROR HANDLER ====//
 app.use((err, req, res, next) => {
