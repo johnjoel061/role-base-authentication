@@ -1,93 +1,89 @@
-//External Lib  import
 const express = require("express");
-const morgan = require("morgan");
 const dotenv = require("dotenv");
-// const multer = require("multer");
 const path = require("path");
+const fs = require('fs');
+const cors = require("cors");
+const app = express();
 
-const app = new express();
+//===== ROUTERS ====//
+const authRouter = require('./routes/authRoute');
+const userRouter = require('./routes/userRoute');
+const facilityRouter = require('./routes/facilityRoute');
+const schedulingRequestRouter = require('./routes/schedulingRequestRoute');
 
-//Internal Lib Import
-const {
-  DefaultErrorHandler,
-  NotFoundError,
-} = require("./src/helper/ErrorHandler");
 
-//Confiqure dotenv
+//===== ENVIRONMENT VARIABLES ====//
 dotenv.config({ path: path.join(__dirname, "./.env") });
 
-//Import Database Confiq
-const connectDB = require("./src/confiq/db");
+//===== DATABASE CONFIGURATION ====//
+const connectDB = require("./confiq/db");
 
-//Import route
-const routes = require("./src/routes");
-
-//Security lib import
-const cors = require("cors");
-const hpp = require("hpp");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const expressMongoSanitize = require("express-mongo-sanitize");
-const xssClean = require("xss-clean");
-
-//Security middleware emplement
+//===== MIDDLEWARE ====//
 app.use(cors());
-app.use(hpp());
-app.use(
-  helmet.contentSecurityPolicy({
-    useDefaults: true,
-    directives: {
-      "img-src": ["'self'", "https: data: blob:"],
-    },
-  }),
-);
-app.use(expressMongoSanitize());
-app.use(xssClean());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 
-//Default middleware emplement
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
-
-// Apply the rate limiting middleware to all requests
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10000,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use(limiter);
-
+//===== DATABASE CONNECTION ====//
 const MONGODB_CONNECTION_URL = process.env.MONGODB_CONNECTION_URL;
 const DB_OPTIONS = {
-  user: process.env.MONGODB_DATABASE_USERNAME,
-  pass: process.env.MONGODB_DATABASE_PASSWORD,
   dbName: process.env.MONGODB_DATABASE_NAME,
   autoIndex: true,
 };
 
-//connection database
+// Debugging: Log DB_OPTIONS to ensure they are correctly set
+//console.log("DB_OPTIONS:", DB_OPTIONS);
+
+// Connect to the database
 connectDB(MONGODB_CONNECTION_URL, DB_OPTIONS);
 
-// Routing Implement
-app.use("/api/v1", routes);
+//===== ROUTING IMPLEMENTATION ====//
+app.use("/api/auth", authRouter);
+app.use("/api/admin", userRouter);
+app.use("/api/location", facilityRouter);
+app.use("/api/book", schedulingRequestRouter);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-  // Add React Front End Routing
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+
+//===== GLOBAL ERROR HANDLER ====//
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+});
+
+// Serve static files from the 'public' directory
+app.use("/", express.static(path.join(__dirname, "public")));
+
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Serve Vite app files in development
+if (process.env.NODE_ENV === "development") {
+  // Use the Vite dev server URL to proxy API requests
+  app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      next(); // Let API requests go through
+    } else {
+      // For all other requests, send to Vite
+      const viteDevServerURL = 'http://localhost:5173'; // Default Vite port
+      res.redirect(viteDevServerURL + req.originalUrl);
+    }
   });
 }
 
-//static file
-app.use("/", express.static(path.join(__dirname, "public")));
-
-//Not Found Error Handler
-app.use(NotFoundError);
-
-// Default Error Handler
-app.use(DefaultErrorHandler);
+// Handle 404 errors
+app.all('*', (req, res) => {
+  res.status(404);
+  if (req.accepts('html')) {
+    res.sendFile(path.join(__dirname, 'views', '404.html'));
+  } else if (req.accepts('json')) {
+    res.json({ message: "404 Not Found" });
+  } else {
+    res.json({ message: '404 Not Found' });
+  }
+});
 
 module.exports = app;
